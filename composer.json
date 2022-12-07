@@ -1,0 +1,29 @@
+{
+    "name": "zlt/laravel-notion-viewer",
+    "description": "Render Notion blocks with Laravel",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Zlt\\LaravelNotionViewer\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Zaw Lin Tun",
+            "email": "zawlintun@utycc.edu.mm"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "illuminate/support": "^9.0",
+        "php": "^8.1",
+        "illuminate/http": "^9.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Zlt\\LaravelNotionViewer\\LaravelNotionViewerProvider"
+            ]
+        }
+    }
+}
