@@ -1,5 +1,5 @@
 {
-    "name": "zlt/laravel-notion-viewer-server",
+    "name": "zlt/laravel-notion-viewer",
     "description": "Get Notion blocks with Laravel",
     "license": "MIT",
     "autoload": {
