@@ -49,32 +49,35 @@ class Client
     public static function getBlocks(string $id)
     {
         $instance = static::getInstance();
-        $result = fn() => Http::withHeaders($instance->headers())
+        $get = fn() => Http::withHeaders($instance->headers())
             ->get(static::BASE_URL . "/blocks/{$id}/children")
             ->json();
         if ($instance->shouldCache) {
-            return Cache::remember("notion-blocks-{$id}", $instance->cacheInSeconds, $result);
+            return Cache::remember("notion-blocks-{$id}", $instance->cacheInSeconds, $get);
         }
-        return $result();
+        return $get();
     }
 
 
     public static function getPage(string $id)
     {
         $instance = static::getInstance();
-        $result = fn() => Http::withHeaders($instance->headers())
+        $get = fn() => Http::withHeaders($instance->headers())
             ->get(static::BASE_URL . "/pages/{$id}")
             ->json();
         if ($instance->shouldCache) {
-            return Cache::remember("notion-page-{$id}", $instance->cacheInSeconds, $result);
+            return Cache::remember("notion-page-{$id}", $instance->cacheInSeconds, $get);
         }
-        return $result();
+        return $get();
     }
 
     public static function getRecursiveBlocks(string $id): array
     {
         $response = static::getBlocks($id);
-        $blocks = $response['results'] ?? [];
+        if (!isset($response['results'])) {
+            return $response;
+        }
+        $blocks = $response['results'];
         return array_map(function ($block) {
             if ($block['has_children']) {
                 $block['children'] = static::getRecursiveBlocks($block['id']);
