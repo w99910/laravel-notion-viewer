@@ -4,6 +4,7 @@ namespace Zlt\LaravelNotionViewer\Notion;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Zlt\LaravelNotionViewer\Notion\Blocks\Blocks;
 
 class Client
 {
@@ -38,72 +39,20 @@ class Client
         return static::$instance;
     }
 
-    protected function headers(): array
-    {
-        return [
-            'Authorization' => 'Bearer ' . $this->apiKey,
-            'Notion-Version' => $this->apiVersion,
-        ];
-    }
-
-    public static function getBlocks(string $id)
+    public static function blocks(): Blocks
     {
         $instance = static::getInstance();
-        $get = fn() => Http::withHeaders($instance->headers())
-            ->get(static::BASE_URL . "/blocks/{$id}/children")
-            ->json();
-        if ($instance->shouldCache) {
-            return Cache::remember("notion-blocks-{$id}", $instance->cacheInSeconds, $get);
-        }
-        return $get();
+        return new Blocks($instance->apiKey, $instance->apiVersion);
     }
-
 
     public static function getPage(string $id)
     {
         $instance = static::getInstance();
-        $get = fn() => Http::withHeaders($instance->headers())
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $instance->apiKey,
+            'Notion-Version' => $instance->apiVersion,
+        ])
             ->get(static::BASE_URL . "/pages/{$id}")
             ->json();
-        if ($instance->shouldCache) {
-            return Cache::remember("notion-page-{$id}", $instance->cacheInSeconds, $get);
-        }
-        return $get();
-    }
-
-    public static function getRecursiveBlocks(string $id): array
-    {
-        $response = static::getBlocks($id);
-        if (!isset($response['results'])) {
-            return $response;
-        }
-        $blocks = $response['results'];
-        return array_map(function ($block) {
-            if ($block['has_children']) {
-                $block['children'] = static::getRecursiveBlocks($block['id']);
-            }
-            return $block;
-        }, $blocks);
-    }
-
-
-    public static function getPageWithBlocks(string $id): array
-    {
-        $page = static::getPage($id);
-        $blocks = static::getBlocks($id);
-        return [
-            'page' => $page,
-            'blocks' => $blocks,
-        ];
-    }
-
-    public static function getPageWithRecursiveBlocks(string $id): array
-    {
-        $page = static::getPage($id);
-        $blocks = static::getRecursiveBlocks($id);
-        return [
-            'page' => $page,
-            'blocks' => $blocks,
-        ];
     }
 }

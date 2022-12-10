@@ -23,6 +23,7 @@ Requirements are:
 ```
 
 You need to provide API key for getting Notion API.
+
 > If you don't know how to get API key, please consult [this documentation](Getting-Notion-API-Key.md).
 
 ## Installation
@@ -43,8 +44,6 @@ The following routes will be auto registered.
 
 ```php
 /laravel-notion-viewer/data/{id}
-/laravel-notion-viewer/page/{id}
-/laravel-notion-viewer/blocks/{id}
 /laravel-notion-viewer/link-preview
 ```
 
@@ -54,13 +53,13 @@ Config file will be
 'API_KEY' => env('NOTION_API_KEY'),
 
 'API_VERSION' => env('NOTION_API_VERSION'), // default '2022-06-28'
-   
+
 'cache' => [
    // If you want to cache the response, set this to true
-   'enabled' => false, 
-   
+   'enabled' => false,
+
    // specify cache time in seconds
-   'time' => 60, 
+   'time' => 60,
 ]
 ```
 
@@ -72,32 +71,35 @@ use Zlt\LaravelNotionViewer\Notion\Client;
 
 - ### Getting Notion Page
 
-    ```php
-    Client::getPage('page-id');
-    ```
+  ```php
+  Client::getPage('page-id');
+  ```
 
 - ### Getting Blocks
 
-    ```php
-    Client::getBlocks('block-id');
-    ```
+  ```php
+  Client::getBlocks('block-id');
+  ```
+
 - ### Getting Notion Page With Blocks
 
-    ```php
-    Client::getPageWithBlocks('page-id');
-    ```
+  ```php
+  Client::getPageWithBlocks('page-id');
+  ```
+
 - ### Getting Recursive Blocks
 
   Some blocks have children blocks. In order to get all children blocks, use this method.
-    ```php
-    Client::getRecursiveBlocks('block-id');
-    ```
+
+  ```php
+  Client::getRecursiveBlocks('block-id');
+  ```
 
 - ### Getting Page with Recursive Blocks
 
-    ```php
-    Client::getPageWithRecursiveBlocks('page-id');
-    ```
+  ```php
+  Client::getPageWithRecursiveBlocks('page-id');
+  ```
 
 ## TroubleShooting
 
